@@ -1,8 +1,5 @@
-;;
 ;; División entera entre 10
-;;
 ;; Nesu 2022. Optimizado por Joaquín Ferrero y Nesu en 2023
-;;
 ;; Entrada en A. Salida en A. Destruye B y C.
 ;;
 ;; N/10 = N/2 * 1/5  que se aproxima a  N/2 * 13/64
@@ -10,7 +7,9 @@
 ;; Por tanto, N/10 aproximadamente es (N/16 + N/4 + N/2) / 8
 ;;
 ;; 19 bytes / 21 microsegundos
-;;
+;; Input:    A como dividendo
+;; Output:   A como cociente
+;; Destruye: BC,A 
 division_entre_10::
 ld bc,#0xC0FE ; [3] Un coffee para empezar bien el día :)
 srl a     ; [2]  A = N/2
