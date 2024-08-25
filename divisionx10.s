@@ -2,7 +2,7 @@
 ;;  This file is part of CPCtelera: An Amstrad CPC Game Engine 
 ;;  Copyright (C) 2021 Joaquín Ferrero (https://github.com/joaquinferrero)
 ;;  Copyright (C) 2021 Nestornillo (https://github.com/nestornillo)
-;;  Copyright (C) 2024 raulgafer ()
+;;  Copyright (C) 2024 raulgarfer (https://github.com/raulgarfer)
 ;;  Copyright (C) 2024 ronaldo / Fremos / Cheesetea / ByteRealms (@FranGallegoBR)
 ;;
 ;;  This program is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 ;;  You should have received a copy of the GNU Lesser General Public License
 ;;  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ;;-------------------------------------------------------------------------------
-.module cpct_math
+.module cpct_math
   
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Function: cpct_divideby10
@@ -43,11 +43,11 @@
 ;;
 ;; Details:
 ;; This function returns the result of the division of a given number divided
-;; by 10 (decimal). 
-;; N/10 = N/2 * 1/5 ,is near to N/2 * 13/64
+;; by 10 (decimal). 
+;; N/10 = N/2 * 1/5 ,is near to N/2 * 13/64
 ;; 13/64 = (1 + 4 + 8) / 64 = (1/8 + 1/2 + 1) / 8
 ;; So, N/10 aproximately is (N/16 + N/4 + N/2) / 8
-;;
+;;
 ;; Destroyed Register values:
 ;;    AF, BC
 ;;
@@ -65,24 +65,28 @@
 ;; -----------------------------------------
 ;; (end code)
 ;;
-;; 19 bytes / 21 microsegundos
-;; Input:    A como dividendo
-;; Output:   A como cociente
-;; Destruye: BC,A 
-division_entre_10::
-ld bc,#0xC0FE ; [3] Un coffee para empezar bien el día :)
+;;
+ld bc,#0xC0FE ; [3] Take a coffee to start a good day:)
 srl a     ; [2]  A = N/2
-add b     ; [1]  Ajuste para valores de
-sbc b     ; [1]    entrada mayores que 127
+add b     ; [1]  Adjust input values 
+sbc b     ; [1]    greater than 127
 ld b,a    ; [1]  B = N/2
 and c     ; [1]
+;; Divide A=N to get the final result  
+;; A = (N/16 + N/4 + N/2) / 8
+;;divide N by 8 A=(N/8)
 rra       ; [1]  A = N/4
 rra       ; [1]  A = N/8
+;;add N/2
 add b     ; [1]  A = N/8  + N/2
+;;divide by 2 A=N/8 + N/2)*2
 rra       ; [1]  A = N/16 + N/4
+;;add N/2
 add b     ; [1]  A = N/16 + N/4 + N/2
+;;divide by 2 A=(N/16 + N/4 + N/2) / 2
 rra       ; [1]  A = (N/16 + N/4 + N/2) / 2
 and c     ; [1]
+;;final result A = (N/16 + N/4 + N/2) / 8
 rra       ; [1]  A = (N/16 + N/4 + N/2) / 4
 rra       ; [1]  A = (N/16 + N/4 + N/2) / 8
-ret       ; [3]he URL below and collaborate with your friends.
+ret       ; [3]
