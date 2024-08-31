@@ -8,5 +8,7 @@
 -l /home/papi/cpctelera/cpctelera/cpctelera.lib
 -l z80
 obj/main.rel
+obj/cpct_divide_asmbindings.rel
+obj/cpct_divideby10_cbindings.c.rel
 
 -e

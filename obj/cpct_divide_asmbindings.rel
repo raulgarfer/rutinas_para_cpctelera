@@ -1,0 +1,15 @@
+XL2
+H 1 areas 3 global symbols
+M cpct_divideby10
+S .__.ABS. Def0000
+A _CODE size 13 flags 0 addr 0
+S cpct_divideby10_asm Def0000
+S _cpct_divideby10_asm Def0000
+T 00 00
+R 00 00 00 00
+T 00 00
+R 00 00 00 00
+T 00 00 01 FE C0 CB 3F 80 98 47 A1 1F 1F 80 1F 80
+R 00 00 00 00
+T 0E 00 1F A1 1F 1F C9
+R 00 00 00 00

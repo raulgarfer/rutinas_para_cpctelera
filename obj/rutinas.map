@@ -7,10 +7,9 @@ Area                                    Addr        Size        Decimal Bytes (A
 
       Value  Global                              Global Defined In Module
       -----  --------------------------------   ------------------------
-     00000000  .__.ABS.                           
+     00000000  .__.ABS.                           cpct_divideby10
      00000000  l__CABS                         
      00000000  l__DABS                         
-     00000000  l__DATA                         
      00000000  l__GSFINAL                      
      00000000  l__GSINIT                       
      00000000  l__HOME                         
@@ -18,56 +17,50 @@ Area                                    Addr        Size        Decimal Bytes (A
      00000000  l__INITIALIZER                  
      00000000  s__CABS                         
      00000000  s__DABS                         
-     00000123  l__CODE                         
+     00000001  l__DATA                         
+     0000003E  l__CODE                         
      00004000  s__CODE                         
-     00004123  s__DATA                         
-     00004123  s__GSFINAL                      
-     00004123  s__GSINIT                       
-     00004123  s__HOME                         
-     00004123  s__INITIALIZED                  
-     00004123  s__INITIALIZER                  
+     0000403E  s__DATA                         
+     0000403F  s__GSFINAL                      
+     0000403F  s__GSINIT                       
+     0000403F  s__HOME                         
+     0000403F  s__INITIALIZED                  
+     0000403F  s__INITIALIZER                  
 
 ASxxxx Linker V03.00 + NoICE + sdld,  page 2.
 Hexadecimal  [32-Bits]
 
 Area                                    Addr        Size        Decimal Bytes (Attributes)
 --------------------------------        ----        ----        ------- ----- ------------
-_CODE                               00004000    00000123 =         291. bytes (REL,CON)
+_CODE                               00004000    0000003E =          62. bytes (REL,CON)
 
       Value  Global                              Global Defined In Module
       -----  --------------------------------   ------------------------
      00004000  _main                              main
-     00004034  _cpct_drawStringM1                 cpct_strings
-     00004064  cpct_drawCharM1_inner_asm          cpct_strings
-     000040A4  cpct_char2pxM1                     cpct_strings
-     000040B4  _cpct_mode_rom_status              cpct_firmware
-     000040B5  _cpct_getScreenPtr                 cpct_video
-     000040CB  _cpct_setDrawCharM1                cpct_strings
-     0000411F  dc_mode1_ct                        
+     00004014  _cpct_divideby10_asm               cpct_divideby10
+     00004014  cpct_divideby10_asm                cpct_divideby10
+     00004027  _cpct_divideby10                   cpct_divideby10
 
 ASxxxx Linker V03.00 + NoICE + sdld,  page 3.
+Hexadecimal  [32-Bits]
+
+Area                                    Addr        Size        Decimal Bytes (Attributes)
+--------------------------------        ----        ----        ------- ----- ------------
+_DATA                               0000403E    00000001 =           1. bytes (REL,CON)
+
+      Value  Global                              Global Defined In Module
+      -----  --------------------------------   ------------------------
+     0000403E  _x                                 main
+
+ASxxxx Linker V03.00 + NoICE + sdld,  page 4.
 
 Files Linked                              [ module(s) ]
 
 obj/main.rel                              [ main ]
+obj/cpct_divide_asmbindings.rel           [ cpct_divideby10 ]
+obj/cpct_divideby10_cbindings.c.rel       [ cpct_divideby10 ]
 
-
-Libraries Linked                          [ object file ]
-
-/home/papi/cpctelera/cpctelera/cpctelera.lib
-                                          [ cpct_drawStringM1_cbindings.rel ]
-/home/papi/cpctelera/cpctelera/cpctelera.lib
-                                          [ cpct_drawCharM1_inner.rel ]
-/home/papi/cpctelera/cpctelera/cpctelera.lib
-                                          [ cpc_mode_rom_status.rel ]
-/home/papi/cpctelera/cpctelera/cpctelera.lib
-                                          [ cpct_getScreenPtr_cbindings.rel ]
-/home/papi/cpctelera/cpctelera/cpctelera.lib
-                                          [ cpct_setDrawCharM1_cbindings.rel ]
-/home/papi/cpctelera/cpctelera/cpctelera.lib
-                                          [ cpct_dc_mode1_ct.rel ]
-
-ASxxxx Linker V03.00 + NoICE + sdld,  page 4.
+ASxxxx Linker V03.00 + NoICE + sdld,  page 5.
 
 User Base Address Definitions
 

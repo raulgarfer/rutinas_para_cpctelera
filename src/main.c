@@ -15,22 +15,17 @@
 //  You should have received a copy of the GNU Lesser General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //------------------------------------------------------------------------------
-
+void divide();
 #include <cpctelera.h>
-
+u8 cpct_divideby10(u8 x);
+u8 x;
 void main(void) {
-   u8* pvmem;  // Pointer to video memory
-
-   // Make pvmem point to the byte in video memory where we want
-   // to print our string (coordinates (20, 96) in bytes, (80, 96) in pixels,
-   // as each byte is 4 pixels wide in mode 1)
-   pvmem = cpct_getScreenPtr(CPCT_VMEM_START, 20, 96);
-   // Set Mode 1 Character&String drawing functions to use colours 
-   // 1 (yellow) for foreground and 0 (blue) for background
-   cpct_setDrawCharM1(1, 0);
-   // Draw the actual string where pvmem is pointing
-   cpct_drawStringM1("Welcome to CPCtelera!", pvmem);
-
+    // cpct_divideby10(100);
    // Loop forever
+     // divide();
+   x  =  cpct_divideby10(200);
+   
+   cpct_divideby10_asm();
    while (1);
+
 }

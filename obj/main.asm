@@ -9,9 +9,8 @@
 ; Public variables in this module
 ;--------------------------------------------------------
 	.globl _main
-	.globl _cpct_getScreenPtr
-	.globl _cpct_drawStringM1
-	.globl _cpct_setDrawCharM1
+	.globl _cpct_divideby10
+	.globl _x
 ;--------------------------------------------------------
 ; special function registers
 ;--------------------------------------------------------
@@ -19,6 +18,8 @@
 ; ram data
 ;--------------------------------------------------------
 	.area _DATA
+_x::
+	.ds 1
 ;--------------------------------------------------------
 ; ram data
 ;--------------------------------------------------------
@@ -43,34 +44,24 @@
 ; code
 ;--------------------------------------------------------
 	.area _CODE
-;src/main.c:21: void main(void) {
+;src/main.c:22: void main(void) {
 ;	---------------------------------
 ; Function main
 ; ---------------------------------
 _main::
-;src/main.c:27: pvmem = cpct_getScreenPtr(CPCT_VMEM_START, 20, 96);
-	ld	hl, #0x6014
-	push	hl
-	ld	hl, #0xc000
-	push	hl
-	call	_cpct_getScreenPtr
-;src/main.c:30: cpct_setDrawCharM1(1, 0);
-	push	hl
-	ld	bc, #0x0001
-	push	bc
-	call	_cpct_setDrawCharM1
-	pop	hl
-;src/main.c:32: cpct_drawStringM1("Welcome to CPCtelera!", pvmem);
-	ld	bc, #___str_0+0
-	push	hl
-	push	bc
-	call	_cpct_drawStringM1
-;src/main.c:35: while (1);
+;src/main.c:26: x  =  cpct_divideby10(200);
+	ld	a, #0xc8
+	push	af
+	inc	sp
+	call	_cpct_divideby10
+	inc	sp
+	ld	iy, #_x
+	ld	0 (iy), l
+;src/main.c:28: cpct_divideby10_asm();
+	call	_cpct_divideby10_asm
+;src/main.c:29: while (1);
 00102$:
 	jr	00102$
-___str_0:
-	.ascii "Welcome to CPCtelera!"
-	.db 0x00
 	.area _CODE
 	.area _INITIALIZER
 	.area _CABS (ABS)

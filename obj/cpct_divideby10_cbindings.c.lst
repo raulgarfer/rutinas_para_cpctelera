@@ -1,0 +1,239 @@
+ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Zilog Z80 / Hitachi HD64180), page 1.
+Hexadecimal [16-Bits]
+
+
+
+                              1 ;;-----------------------------LICENSE NOTICE------------------------------------
+                              2 ;;  This file is part of CPCtelera: An Amstrad CPC Game Engine 
+                              3 ;;  Copyright (C) 2015 ronaldo / Fremos / Cheesetea / ByteRealms (@FranGallegoBR)
+                              4 ;;
+                              5 ;;  This program is free software: you can redistribute it and/or modify
+                              6 ;;  it under the terms of the GNU Lesser General Public License as published by
+                              7 ;;  the Free Software Foundation, either version 3 of the License, or
+                              8 ;;  (at your option) any later version.
+                              9 ;;
+                             10 ;;  This program is distributed in the hope that it will be useful,
+                             11 ;;  but WITHOUT ANY WARRANTY; without even the implied warranty of
+                             12 ;;  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+                             13 ;;  GNU Lesser General Public License for more details.
+                             14 ;;
+                             15 ;;  You should have received a copy of the GNU Lesser General Public License
+                             16 ;;  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+                             17 ;;-------------------------------------------------------------------------------
+                             18 .module cpct_divideby10
+                             19   
+                             20 ;;
+                             21 ;; C bindings for <cpct_divideby10>
+                             22 ;;
+                             23 ;;   10 microSecs, 7 bytes
+                             24 ;;
+   0000                      25 _cpct_divideby10::
+                             26 
+                             27   ;; Get Parameters from stack
+   0000 E1            [10]   28   pop  hl   ;; [3] AF = Return Address
+   0001 3B            [ 6]   29   dec sp    ;; [6] Substract one from SP
+   0002 F1            [10]   30   pop  af   ;; [3] AF = Destination address
+   0003 E5            [11]   31   push hl   ;; [4] Put returning address in the stack again 
+                             32                ;;      as this function uses __z88dk_callee convention
+ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Zilog Z80 / Hitachi HD64180), page 2.
+Hexadecimal [16-Bits]
+
+
+
+                             33 .include /cpct_divideby10.asm/
+                              1 ;;-----------------------------LICENSE NOTICE------------------------------------
+                              2 ;;  This file is part of CPCtelera: An Amstrad CPC Game Engine 
+                              3 ;;
+                              4 ;;  Created by Nesu 2022. Optimized by Joaquín Ferrero & Nesu in 2023
+                              5 ;;  Copyright (C) 2021 Joaquín Ferrero (https://github.com/joaquinferrero)
+                              6 ;;  Copyright (C) 2021 Nestornillo (https://github.com/nestornillo)
+                              7 ;;  Copyright (C) 2024 raulgarfer (https://github.com/raulgarfer)
+                              8 ;;  Copyright (C) 2024 ronaldo / Fremos / Cheesetea / ByteRealms (@FranGallegoBR)
+                              9 ;;
+                             10 ;;  This program is free software: you can redistribute it and/or modify
+                             11 ;;  it under the terms of the GNU Lesser General Public License as published by
+                             12 ;;  the Free Software Foundation, either version 3 of the License, or
+                             13 ;;  (at your option) any later version.
+                             14 ;;
+                             15 ;;  This program is distributed in the hope that it will be useful,
+                             16 ;;  but WITHOUT ANY WARRANTY; without even the implied warranty of
+                             17 ;;  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+                             18 ;;  GNU Lesser General Public License for more details.
+                             19 ;;
+                             20 ;;  You should have received a copy of the GNU Lesser General Public License
+                             21 ;;  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+                             22 ;;-------------------------------------------------------------------------------
+                             23 .module cpct_divideby10
+                             24   
+                             25 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                             26 ;; Function: cpct_divideby10
+                             27 ;;
+                             28 ;; Returns a byte that is the result of dividing an integer number by 10.
+                             29 ;;
+                             30 ;; C Definition:
+                             31 ;;    <u8> <cpct_divideby10> (u8 dividend) __z88dk_fastcall;
+                             32 ;;
+                             33 ;; Assembly call:
+                             34 ;;    > call cpct_divideby10_asm
+                             35 ;;
+                             36 ;; Input Parameters (1 Byte):
+                             37 ;;    (1B A ) dividend  - [0-255] Number to be divided Byte
+                             38 ;;
+                             39 ;; Return Value:
+                             40 ;;    (A) u8 - Result of the operation.
+                             41 ;;
+                             42 ;; Parameter Restrictions:
+                             43 ;;    * Number must be among 0 and 255. 
+                             44 ;;
+                             45 ;; Known limitations:
+                             46 ;;
+                             47 ;; Details:
+                             48 ;; This function returns the integer result of dividing a given number
+                             49 ;; by 10 (decimal). The function is exact for integer division
+                             50 ;; for all integers within the byte range [0-255]. The function does not return
+                             51 ;; a remainder, nor does it use decimals in its operations. 
+                             52 ;; If the input number is greater than 127, function does a calculation
+                             53 ;; to make corrections to avoid possible failures.
+                             54 ;;
+ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Zilog Z80 / Hitachi HD64180), page 3.
+Hexadecimal [16-Bits]
+
+
+
+                             55 ;; A number divided by 10 is equal to that number divided by 2 and multiplied
+                             56 ;; by 1/5 (0.20). For example, if we consider N = 20, then:
+                             57 ;; 1) 20/2 * 1/5 
+                             58 ;; 2) 10/1 * 1/5 
+                             59 ;; 3) 10/5 
+                             60 ;; 4) 2
+                             61 ;; So, 20/10 = 2.  
+                             62 ;; This operation is close to 13/64; if we multiply 1 by 13 and 5
+                             63 ;; by 13, the result is 13/65, close to 13/64. The approximation used by
+                             64 ;; the routine works well up to 127, but then it 'shifts' from
+                             65 ;; the actual result of A/10. It is necessary to adjust for higher values.
+                             66 ;; N/10 = N/2 * 1/5, which is close to N/2 * 13/64.
+                             67 ;; The approximation 13/64 can be refactored to:
+                             68 ;; 1) (1   + 4   +  8) / 64, which is equal to
+                             69 ;; 2) (1/8 + 4/8 + 8/8 ) / 8
+                             70 ;; 3) (1/8 + 1/2 + 1/1 ) / 8
+                             71 ;; Previously, we omitted N/2; let's insert it now:
+                             72 ;; 4) N/2 * 1 / 5 is similar to
+                             73 ;; 5) N/2 * (1/8  + 1/2 + 1/1) / 8, which refactors to
+                             74 ;; 6)       (N/16 + N/4 + N/2) / 8
+                             75 ;; Taking the example of number 125, perform the operations:
+                             76 ;; 1) (125/16 + 125/4 + 125/2) / 8
+                             77 ;; 2) (   7   +   31  +   62  ) / 8
+                             78 ;; 3) (           99          ) / 8
+                             79 ;; 4)             12
+                             80 ;;
+                             81 ;; Destroyed Register values:
+                             82 ;;    AF, BC
+                             83 ;;
+                             84 ;; Required memory:
+                             85 ;;    C-bindings - 22 bytes
+                             86 ;;  ASM-bindings - 19 bytes
+                             87 ;;
+                             88 ;; Time Measures: 
+                             89 ;; (start code)
+                             90 ;;     Case   | microSecs (us) | CPU Cycles
+                             91 ;; -----------------------------------------
+                             92 ;;     Any    |      0         |     38
+                             93 ;; -----------------------------------------
+                             94 ;; Asm saving |     -0         |     -12
+                             95 ;; -----------------------------------------
+                             96 ;; (end code)
+                             97 ;;
+   0004 01 FE C0      [10]   98 	ld bc,#0xC0FE ; [3]  C0 used as a threshold (-64),
+                             99 	              ; FE will be used to unset bit 0 twice later
+   0007 CB 3F         [ 8]  100 	srl a         ; [2]  A = N/2
+                            101 
+                            102 ;; At this point we've divided N by two, let's call M=N/2. That was the easy part.
+                            103 ;; Now we'd like to compute M/5.
+                            104 ;; 1/5 = 0.2
+                            105 ;; What if we tried to multiply instead?
+                            106 ;; 13/64 = 0.203125 which is a little bigger than 0.2 .
+                            107 ;; So we consider M*13/64 as a guide and we'll make it exact with some nudge.
+                            108 ;; Let's go!
+                            109 
+ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Zilog Z80 / Hitachi HD64180), page 4.
+Hexadecimal [16-Bits]
+
+
+
+                            110 ;; 13 = 0x0D = 0b00001101
+                            111 ;; We'll do something that looks like
+                            112 ;; M*13/64 = (M<<3 + M<<2 + M) >> 6
+                            113 
+                            114 ;; Remember, this is too big because 13/64 > 1/5 .
+                            115 
+                            116 ;; Also, M*13 will overflow a byte as soon as M reaches 20, so we
+                            117 ;; don't want to do this on a Z80.
+                            118 
+                            119 ;; We could compute something different, like:
+                            120 ;; ( M + M>>1 + M>>3 ) >> 3
+                            121 ;; This would be smaller because of the lost bits to the right.
+                            122 ;; Could this be exact? No, it is too small.
+                            123 
+                            124 ;; Actually, since Z80 does not have multi-bit shift, we prefer to
+                            125 ;; shift and combine, as many times as needed.
+                            126 ;; Also it happens that the result is exact up to N=128.
+                            127 ;; Even better, it is enough to subtract 2 to N for 128<=N<256 to get
+                            128 ;; it exact there too.
+                            129 
+                            130 ;; Things fall into place marvelously now.
+                            131 
+                            132 	; The combined effect of the next two instructions is to
+                            133 	; decrement A if bigger than 64 in only 2 bytes 2µs
+   0009 80            [ 4]  134 	add b   ; [1]  Corrupt A, also set Carry flag if b>=64 (eqv N>=128 or M>=64 )
+   000A 98            [ 4]  135 	sbc b   ; [1]  Restore A, minus one if N>=128.
+                            136 	; The instructions above can be skipped if the input range is
+                            137 	; known to be restricted to 0<=N<128
+                            138 
+                            139 ;; let X=N/2 if N<=127, or N/2-1 if N>=128
+                            140 
+   000B 47            [ 4]  141 	ld b,a   ; [1] A = B = X
+                            142 
+                            143 	; Next trick: quickly shift right.
+                            144 	; `srl a` consumes 2 bytes and 2µs.
+                            145 	; `rra` with a clear Carry does the same as `srl a` in only 1 byte 1µs.
+                            146 	; A nice trick is to prefix two `rra` instructions with one
+                            147 	; instruction that make both behave like `srl a` but cheaper.
+                            148 
+                            149 	; The combined effect of the next 3 instructions is to shift A
+                            150 	; by 2 bits to the right (divide by 4) in 3µs, 3 bytes.
+   000C A1            [ 4]  151 	and c   ; [1]  clear bit 0 and Carry,
+                            152 	        ; to allow use of two `rra` to perform two right shifts
+   000D 1F            [ 4]  153 	rra     ; [1]  A = X >> 1, Carry clear
+   000E 1F            [ 4]  154 	rra     ; [1]  A = X >> 2, Carry might be set
+                            155 
+   000F 80            [ 4]  156 	add b   ; [1]  A = (X >> 2) + X,
+                            157 	        ; also clear Carry so that next `rra` is actually a right shift
+   0010 1F            [ 4]  158 	rra     ; [1]  A = ((X >> 2) + X) >> 1
+                            159 
+   0011 80            [ 4]  160 	add b   ; [1]  A = (((X >> 2) + X) >> 1) + X,
+                            161 	        ; also clear Carry so that next `rra` is actually a right shift
+                            162 
+                            163 	; Let's call the value Y = (((X >> 2) + X) >> 1) + X
+                            164 
+ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Zilog Z80 / Hitachi HD64180), page 5.
+Hexadecimal [16-Bits]
+
+
+
+                            165 	; Now we only need 3 right shifts to compute Y >> 3.
+                            166 	; Since Carry is cleared, the first one is straightforward.
+                            167 
+   0012 1F            [ 4]  168 	rra     ; [1]  A = Y >> 1, also Carry might be set.
+                            169 
+                            170 	; the combined effect of the next 3 instructions is to shift A
+                            171 	; by 2 bits to the right (divide by 4) in 3µs, 3 bytes
+   0013 A1            [ 4]  172 	and c   ; [1]  clear bit 0 and Carry,
+                            173 	        ; to allow use of two `rra` to perform two right shifts
+   0014 1F            [ 4]  174 	rra     ; [1]  A = Y >> 2, Carry clear
+   0015 1F            [ 4]  175 	rra     ; [1]  A = Y >> 3, Carry might be set
+ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Zilog Z80 / Hitachi HD64180), page 6.
+Hexadecimal [16-Bits]
+
+
+
+   0016 C9            [10]   34 ret
